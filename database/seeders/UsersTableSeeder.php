@@ -22,7 +22,7 @@ class UsersTableSeeder extends Seeder
             'mail_address'=>'main@main',
             'sex'=>'1',
             'birth_day'=>'1998-09-08',
-            'role'=>'0',
+            'role'=>'1',
             'password'=>'todo199809']
         ]);
     }

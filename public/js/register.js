@@ -64,21 +64,21 @@ $(function () {
     }
 
     var old_year = $('.old_year').val();
-    if (old_year !== 'none') {
+    if (old_year !== '') {
       $('.old_year').addClass('success_year');
     } else {
       $('.old_year').removeClass('success_year');
     }
 
     var old_month = $('.old_month').val();
-    if (old_month !== 'none') {
+    if (old_month !== '') {
       $('.old_month').addClass('success_month');
     } else {
       $('.old_month').removeClass('success_month');
     }
 
     var old_day = $('.old_day').val();
-    if (old_day !== 'none') {
+    if (old_day !== '') {
       $('.old_day').addClass('success_day');
     } else {
       $('.old_day').removeClass('success_day');

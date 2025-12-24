@@ -67,7 +67,7 @@ class User extends Authenticatable
     }
 
     public function subjects(){
-        return $this->belongsToMany('App\Models\Users\subject','subject_users','user_id','subject_id')->withPivot('id');
+        return $this->belongsToMany('App\Models\Users\Subject','subject_users','user_id','subject_id')->withPivot('id');
     }
 
     // いいねしているかどうか

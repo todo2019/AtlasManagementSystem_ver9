@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Authenticated\BulletinBoard;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\Categories\MainCategory;
 use App\Models\Categories\SubCategory;
@@ -58,6 +59,24 @@ class PostsController extends Controller
     }
 
     public function postEdit(Request $request){
+
+        $massages =[
+            'post_title.required' => '修正の内容は必須です。',
+            'post_title.max' => 'タイトルの修正は最大100文字です。',
+            'post_body.required' => '修正の内容は必須です。',
+            'post_body.max' => '投稿の修正は最大2000文字です。',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'post_title' => 'required|string|max:100',
+            'post_body' => 'required|string|max:2000',
+        ], $massages);
+
+        if($validator->fails()) {
+            return back()
+                ->withErrors($validator)
+                ->withInput();
+        }
         Post::where('id', $request->post_id)->update([
             'post_title' => $request->post_title,
             'post' => $request->post_body,
@@ -100,25 +119,29 @@ class PostsController extends Controller
         $user_id = Auth::id();
         $post_id = $request->post_id;
 
-        $like = new Like;
 
-        $like->like_user_id = $user_id;
-        $like->like_post_id = $post_id;
-        $like->save();
+        Like::firstOrCreate([
+        'like_user_id' => $user_id,
+        'like_post_id' => $post_id,
+      ]);
 
-        return response()->json();
+        $post= Post::withCount('likes')->findOrFail($post_id);
+
+        return response()->json([
+        'likes_count' => $post->likes_count,
+      ]);
     }
 
     public function postUnLike(Request $request){
         $user_id = Auth::id();
         $post_id = $request->post_id;
 
-        $like = new Like;
 
         $like->where('like_user_id', $user_id)
-             ->where('like_post_id', $post_id)
+             ->where('like_post_i\d', $post_id)
              ->delete();
 
         return response()->json();
     }
+
 }

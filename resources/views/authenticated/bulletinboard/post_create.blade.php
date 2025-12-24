@@ -4,8 +4,11 @@
     <div class="">
       <p class="mb-0">カテゴリー</p>
       <select class="w-100" form="postCreate" name="post_category_id">
+        <option value="">-----</option>
         @foreach($main_categories as $main_category)
-        <optgroup label="{{ $main_category->main_category }}">
+          <option value="{{ $main_category->id }}">
+            {{ $main_category->main_category }}
+          </option>
         <!-- サブカテゴリー表示 -->
         </optgroup>
         @endforeach

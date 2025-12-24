@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use DB;
 
-use App\Models\Users\Subjects;
+use App\Models\Users\Subject;
 use App\Models\Users\User;
 
 class RegisteredUserController extends Controller
@@ -23,7 +23,7 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        $subjects = Subjects::all();
+        $subjects = Subject::all();
         return view('auth.register.register', compact('subjects'));
     }
 
@@ -38,57 +38,16 @@ class RegisteredUserController extends Controller
     public function store(Request $request)
     {
 
-          $message = [
-              'over_name.required' => 'ユーザー名は必須です。',
-              'over_name.max' => 'ユーザー名は10文字以内で入力してください。',
-              'under_name.required' => 'ユーザー名は必須です。',
-              'under_name.max' => 'ユーザー名は10文字以内で入力してください。',
-              'over_name_kana.required' => 'ユーザー名(カナ)は必須です。',
-              'over_name_kana.regex:/^[ァ-ヶー]+$/u' => 'ユーザー名(カナ)はカタカナ表記のみです。',
-              'over_name_kana.max' => 'ユーザー名(カナ)は30文字以内で入力してください。',
-              'under_name_kana.required' => 'ユーザー名(カナ)は必須です。',
-              'under_name_kana.regex:/^[ァ-ヶー]+$/u' => 'ユーザー名(カナ)はカタカナ表記のみです。',
-              'under_name_kana.max' => 'ユーザー名(カナ)は30文字以内で入力してください。',
-              'mail_address.required' => 'メールアドレスは必須です。',
-              'mail_address.email' => '有効なメールアドレスを入力してください。',
-              'mail_address.unique' => 'このメールアドレスは既に使用されています。',
-              'mail_address.max' =>'メールアドレスは100文字以内で入力してください',
-              'sex.required' =>'性別は選択必須です',
-              'sex.in' =>'性別は男・女・その他のいずれかを選択してください',
-              'old_year.required' => '生年月日の選択は必須です。',
-              'old_month.required' => '生年月日の選択は必須です。',
-              'old_day.required' => '生年月日の選択は必須です。',
-              'role.required' =>'権限の選択は必須です。',
-              'role.in' =>'権限は教師（各教科）・生徒から選択してください。',
-              'password.required' => 'パスワードは必須です。',
-              'password.alpha_num' => 'パスワードは英数字のみで入力してください。',
-              'password.min' => 'パスワードは8文字以上で入力してください。',
-              'password.max' => 'パスワードは30文字以内で入力してください。',
-              'password.confirmed' => 'パスワード確認用と一致させてください。',
-          ];
+       (int)$request->old_year;
+       (int)$request->old_month;
+       (int)$request->old_day;
 
-            $request->validate([
-                'over_name' => 'required|string|max:10',
-                'under_name' => 'required|string|max:10',
-                'over_name_kana' => 'required|string|regex:/^[ァ-ヶー]+$/u|max:30',
-                'under_name_kana' => 'required|string|regex:/^[ァ-ヶー]+$/u|max:30',
-                'mail_address' => 'required|email|unique:users,email|max:100',
-                'sex' => 'required|in:1,2,3',
-                'old_year'  => 'required|integer|between:2000,' . date('Y'),
-                'old_month' => 'required|integer|between:1,12',
-                'old_day'   => 'required|integer|between:1,31',
-                'role'      => 'required|in:1,2,3,4',
-                'password'  => 'required|min:8|max:30|confirmed',
-            ], $message);
-
-        DB::beginTransaction();
-        try{
-            $old_year = $request->old_year;
-            $old_month = $request->old_month;
-            $old_day = $request->old_day;
+     try{
+            $old_year = (int)$request->old_year;
+            $old_month = (int)$request->old_month;
+            $old_day = (int)$request->old_day;
             $data = $old_year . '-' . $old_month . '-' . $old_day;
             $birth_day = date('Y-m-d', strtotime($data));
-            $subjects = $request->subject;
 
             $user_get = User::create([
                 'over_name' => $request->over_name,
@@ -101,15 +60,13 @@ class RegisteredUserController extends Controller
                 'role' => $request->role,
                 'password' => bcrypt($request->password)
             ]);
-            if($request->role == 4){
-                $user = User::findOrFail($user_get->id);
-                $user->subjects()->attach($subjects);
+            if ($request->role == 4 && $request->filled('subject')) {
+            $user_get->subjects()->attach($request->subject);
             }
             DB::commit();
             return view('auth.login.login');
         }catch(\Exception $e){
-            DB::rollback();
-            return redirect()->route('loginView');
+        return redirect()->route('loginView');
         }
     }
 }
