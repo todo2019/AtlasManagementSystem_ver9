@@ -116,32 +116,48 @@ class PostsController extends Controller
     }
 
     public function postLike(Request $request){
-        $user_id = Auth::id();
-        $post_id = $request->post_id;
+      $userId = Auth::id();
+      $postId = $request->post_id;
 
-
-        Like::firstOrCreate([
-        'like_user_id' => $user_id,
-        'like_post_id' => $post_id,
+      Like::firstOrCreate([
+        'like_user_id' => $userId,
+        'like_post_id' => $postId,
       ]);
 
-        $post= Post::withCount('likes')->findOrFail($post_id);
+      $likeCounts = Like::where('like_post_id',$postId)
+        // ->likes()
+        ->count();
 
-        return response()->json([
-        'likes_count' => $post->likes_count,
+      return response()->json([
+        'likes_count' => $likeCounts,
       ]);
     }
 
+
     public function postUnLike(Request $request){
-        $user_id = Auth::id();
-        $post_id = $request->post_id;
+        // $user_id = Auth::id();
+        $postId = $request->post_id;
 
+        // $post = Like::findOrFail($request->post_id);
 
-        $like->where('like_user_id', $user_id)
-             ->where('like_post_i\d', $post_id)
-             ->delete();
+        Like::where('like_user_id', Auth::id())->where('like_post_id', $postId)
+        ->delete();
 
-        return response()->json();
+        $likeCounts =Like::where('like_post_id',$postId)
+        ->count();
+
+        return response()->json([
+            'likes_count' => $likeCounts,
+        ]);
+    }
+
+    public function commentCounts(Request $request){
+        $postId = $request -> post_id;
+
+        $commentCounts = Post_Comment::where('post_id' , $postId)
+        ->count();
+
+        return view('post.detail');
     }
 
 }

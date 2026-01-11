@@ -55,7 +55,11 @@ class User extends Authenticatable
     ];
 
     public function posts(){
-        return $this->hasMany('App\Models\Posts\Post');
+        return $this->hasMany('App\Models\Posts\Post',);
+    }
+
+    public function  likedPosts(){
+        return $this->belongsToMany('App\Models\Posts\Post','likes','like_user_id','like_post_id')->withPivot('id');
     }
 
     public function calendars(){
@@ -77,5 +81,9 @@ class User extends Authenticatable
 
     public function likePostId(){
         return Like::where('like_user_id', Auth::id());
+    }
+
+    public function likeCounts(){
+        return Like::where('like_user_id',$this->id)->count;
     }
 }

@@ -21,7 +21,10 @@
         <div class="d-flex">
             <div class="sidebar">
                 <p><a href="{{ route('top.show') }}">トップ</a></p>
-                <p><a href="/logout">ログアウト</a></p>
+                <form method="POST" class="logout_button" action="{{ route('logout') }}">
+                  @csrf
+                  <a href="#" class="button_color" onclick="event.preventDefault(); this.closest('form').submit();" >ログアウト</a>
+                </form>
                 <p><a href="{{ route('calendar.general.show',['user_id' => Auth::id()]) }}">スクール予約</a></p>
               @if(in_array(Auth::user()->role, [1, 2, 3]))
                 <p><a href="{{ route('calendar.admin.show',['user_id' => Auth::id()]) }}">スクール予約確認</a></p>

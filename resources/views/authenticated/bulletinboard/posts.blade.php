@@ -10,13 +10,15 @@
         <div class="d-flex post_status">
           <div class="mr-5">
             <i class="fa fa-comment"></i><span class=""></span>
+            <span class="comments_count{{ $post->id }}">{{ $post->commentCounts() }}</span>
           </div>
           <div>
             @if(Auth::user()->is_Like($post->id))
-            <p class="m-0"><i class="fas fa-heart un_like_btn" post_id="{{ $post->id }}"></i><span class="like_counts{{ $post->id }}"> {{$post->like_count}}</span></p>
+            <p class="m-0"><i class="fas fa-heart un_like_btn" post_id="{{ $post->id }}"></i></p>
             @else
-            <p class="m-0"><i class="fas fa-heart like_btn" post_id="{{ $post->id }}"></i><span class="like_counts{{ $post->id }}"> {{$post->like_count}}</span></p>
+            <p class="m-0"><i class="fas fa-heart like_btn" post_id="{{ $post->id }}"></i></p>
             @endif
+            <span class="likes_count{{ $post->id }}">{{ $post->likeCounts() }}</span>
           </div>
         </div>
       </div>

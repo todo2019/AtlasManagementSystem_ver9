@@ -19,8 +19,12 @@ class Post extends Model
         return $this->belongsTo('App\Models\Users\User');
     }
 
+    public function  likedPosts(){
+        return $this->belongsToMany('App\Models\Users\User','likes','like_post_id','like_user_id')->withPivot('id');
+    }
+
     public function postComments(){
-        return $this->hasMany('App\Models\Posts\PostComment');
+        return $this->hasMany('App\Models\Posts\PostComment','post_id');
     }
 
     public function subCategories(){
@@ -28,7 +32,13 @@ class Post extends Model
     }
 
     // コメント数
-    public function commentCounts($post_id){
-        return Post::with('postComments')->find($post_id)->postComments();
+    public function commentCounts(){
+        return $this
+        ->postComments()
+        ->count();
+    }
+
+    public function likeCounts(){
+        return like::where('like_post_id',$this->id)->count();
     }
 }

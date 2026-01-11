@@ -25,10 +25,15 @@ require __DIR__.'/auth.php';
 Route::group(['middleware' => 'auth'], function(){
     Route::namespace('Authenticated')->group(function(){
         Route::namespace('Top')->group(function(){
-            Route::get('logout', [AuthenticatedSessionController::class, 'destroy'])
-                ->name('logout');
+            // Route::get('logout', [AuthenticatedSessionController::class, 'destroy'])
+                // ->name('logout');
             Route::get('top', [TopsController::class, 'show'])->name('top.show');
         });
+
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+                ->middleware('auth')
+                ->name('logout');
+
         Route::namespace('Calendar')->group(function(){
             Route::namespace('General')->group(function(){
                 Route::get('calendar/{user_id}', [CalendarController::class, 'show'])->name('calendar.general.show');
