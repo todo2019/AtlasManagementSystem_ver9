@@ -7,22 +7,26 @@
       <p><span>{{ $post->user->over_name }}</span><span class="ml-3">{{ $post->user->under_name }}</span>さん</p>
       <p><a href="{{ route('post.detail', ['id' => $post->id]) }}">{{ $post->post_title }}</a></p>
       <div class="post_bottom_area d-flex">
-        <div class="d-flex post_status">
-          <div class="mr-5">
-            <i class="fa fa-comment"></i><span class=""></span>
-            <span class="comments_count{{ $post->id }}">{{ $post->commentCounts() }}</span>
+          <div class="post_category"></div>
+            <div>
+              @foreach($post->subCategories as $subCategory)
+                <span >{{ $subCategory->sub_category}}</span>
+              @endforeach
+            </div>
+            <div class="mr-5">
+              <i class="fa fa-comment"></i><span class=""></span>
+              <span class="comments_count{{ $post->id }}">{{ $post->commentCounts() }}</span>
+            </div>
+            <div>
+              @if(Auth::user()->is_Like($post->id))
+                <p class="m-0"><i class="fas fa-heart un_like_btn" post_id="{{ $post->id }}"></i></p>
+                @else
+                <p class="m-0"><i class="fas fa-heart like_btn" post_id="{{ $post->id }}"></i></p>
+              @endif
+              <span class="likes_count{{ $post->id }}">{{ $post->likeCounts() }}</span>
+            </div>
           </div>
-          <div>
-            @if(Auth::user()->is_Like($post->id))
-            <p class="m-0"><i class="fas fa-heart un_like_btn" post_id="{{ $post->id }}"></i></p>
-            @else
-            <p class="m-0"><i class="fas fa-heart like_btn" post_id="{{ $post->id }}"></i></p>
-            @endif
-            <span class="likes_count{{ $post->id }}">{{ $post->likeCounts() }}</span>
-          </div>
-        </div>
       </div>
-    </div>
     @endforeach
   </div>
   <div class="other_area border w-25">

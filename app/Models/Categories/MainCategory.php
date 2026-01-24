@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models\Categories;
-
+use App\MOdels\Categories\SubCategory;
 use Illuminate\Database\Eloquent\Model;
 
 class MainCategory extends Model
@@ -13,7 +13,7 @@ class MainCategory extends Model
     ];
 
     public function subCategories(){
-        // リレーションの定義
+        return $this->belongsTo(SubCategory::class);
     }
 
 }

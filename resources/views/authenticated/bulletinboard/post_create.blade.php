@@ -3,14 +3,18 @@
   <div class="post_create_area border w-50 m-5 p-5">
     <div class="">
       <p class="mb-0">カテゴリー</p>
-      <select class="w-100" form="postCreate" name="post_category_id">
+      <select class="w-100" form="postCreate" name="sub_category_id">
         <option value="">-----</option>
         @foreach($main_categories as $main_category)
-          <option value="{{ $main_category->id }}">
+          <option value="{{ $main_category->id }}" disabled>
             {{ $main_category->main_category }}
           </option>
-        <!-- サブカテゴリー表示 -->
-        </optgroup>
+        @endforeach
+        @foreach($sub_categories as $sub_category)
+          <!-- サブカテゴリー表示 -->
+          <option value="{{ $sub_category->id }}" >
+            {{ $sub_category->sub_category }}
+          </option>
         @endforeach
       </select>
     </div>
@@ -34,6 +38,7 @@
     <form action="{{ route('post.create') }}" method="post" id="postCreate">{{ csrf_field() }}</form>
   </div>
   @can('admin')
+  @if(in_array(Auth::user()->role, [1, 2, 3]))
   <div class="w-25 ml-auto mr-auto">
     <div class="category_area mt-5 p-5">
       <div class="">
@@ -41,10 +46,25 @@
         <input type="text" class="w-100" name="main_category_name" form="mainCategoryRequest">
         <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="mainCategoryRequest">
       </div>
-      <!-- サブカテゴリー追加 -->
       <form action="{{ route('main.category.create') }}" method="post" id="mainCategoryRequest">{{ csrf_field() }}</form>
+      <div class="">
+        <form action="{{ route('sub.category.create') }}" method="post">
+          @csrf
+          <p class="m-0">サブカテゴリー</p>
+          <select class="w-100" name="main_category_id">
+              @foreach($main_categories as $main_category)
+                <option value="{{$main_category->id}}">
+                  {{ $main_category->main_category }}
+                </option>
+              @endforeach
+          </select>
+          <input type="text" class="w-100" name="sub_category" >
+          <input type="submit" value="追加" class="w-100 btn btn-primary p-0">
+        </form>
+      </div>
     </div>
   </div>
+  @endif
   @endcan
 </div>
 </x-sidebar>
