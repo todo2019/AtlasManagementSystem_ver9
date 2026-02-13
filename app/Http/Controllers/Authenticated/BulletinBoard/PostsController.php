@@ -18,13 +18,17 @@ class PostsController extends Controller
 {
     public function show(Request $request){
         $posts = Post::with('user', 'postComments','subCategories')->get();
-        $categories = MainCategory::get();
+        $categories = MainCategory::with('subCategories')->get();
         $like = new Like;
         $post_comment = new Post;
         if(!empty($request->keyword)){
-            $posts = Post::with('user', 'postComments')
-            ->where('post_title', 'like', '%'.$request->keyword.'%')
-            ->orWhere('post', 'like', '%'.$request->keyword.'%')->get();
+            $posts = Post::with('user', 'postComments','subCategories')
+            ->where('post_title',$request->keyword)
+            ->orWhere('post',$request->keyword)
+            ->orWhereHas('subCategories', function ($q) use ($request) {
+              $q->where('sub_category', $request->keyword);
+              })
+              ->get();
         }else if($request->category_word){
             $sub_category = $request->category_word;
             $posts = Post::with('user', 'postComments')->get();
@@ -51,6 +55,13 @@ class PostsController extends Controller
     }
 
     public function postCreate(PostFormRequest $request){
+
+        $validator =Validator::make($request->all(),[
+            'post_category_id' => 'required|exists:sub_categories,id',
+            'post_title' => 'required|string|max:100',
+            'post_body' => 'required|string|max:2000',
+        ]);
+
         $post = Post::create([
             'user_id' => Auth::id(),
             'post_title' => $request->post_title,
@@ -102,11 +113,9 @@ class PostsController extends Controller
 
     public function subCategoryCreate(Request $request){
 
-
-
         $request->validate([
             'main_category_id' => 'required|exists:main_categories,id',
-            'sub_category' => 'required|max:100|string',
+            'sub_category' => 'required|max:100|string|unique:sub_categories,sub_category',
         ]);
 
         $main_Categories = MainCategory::findOrFail( $request->main_category_id);
@@ -185,4 +194,4 @@ class PostsController extends Controller
         return view('post.detail');
     }
 
-}
+    }

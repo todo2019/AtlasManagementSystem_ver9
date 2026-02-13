@@ -10,12 +10,10 @@
           <div class="post_category"></div>
             <div>
               @foreach($post->subCategories as $subCategory)
-                <span >{{ $subCategory->sub_category}}</span>
+                <input type="submit" value="{{ $subCategory->sub_category}}">
               @endforeach
-            </div>
-            <div class="mr-5">
               <i class="fa fa-comment"></i><span class=""></span>
-              <span class="comments_count{{ $post->id }}">{{ $post->commentCounts() }}</span>
+              <i class="comments_count{{ $post->id }}">{{ $post->commentCounts() }}</i>
             </div>
             <div>
               @if(Auth::user()->is_Like($post->id))
@@ -23,7 +21,7 @@
                 @else
                 <p class="m-0"><i class="fas fa-heart like_btn" post_id="{{ $post->id }}"></i></p>
               @endif
-              <span class="likes_count{{ $post->id }}">{{ $post->likeCounts() }}</span>
+                <p class="likes_count{{ $post->id }}">{{ $post->likeCounts() }}</p>
             </div>
           </div>
       </div>
@@ -39,8 +37,12 @@
       <input type="submit" name="like_posts" class="category_btn" value="いいねした投稿" form="postSearchRequest">
       <input type="submit" name="my_posts" class="category_btn" value="自分の投稿" form="postSearchRequest">
       <ul>
+        <li>教科</li>
         @foreach($categories as $category)
-        <li class="main_categories" category_id="{{ $category->id }}"><span>{{ $category->main_category }}<span></li>
+            <li class="main_categories" category_id="{{ $category->id }}"><span>{{ $category->main_category }}</span></li>
+          @foreach($category ->subCategories as $subCategory)
+            <li class="sub_categories" category_id="{{ $category->id }}"><button type ="submit" name="keyword"  value="{{ $subCategory->sub_category }}" form="postSearchRequest">{{$subCategory->sub_category}}</button></li>
+          @endforeach
         @endforeach
       </ul>
     </div>

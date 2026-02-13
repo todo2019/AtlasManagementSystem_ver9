@@ -9,12 +9,11 @@
           <option value="{{ $main_category->id }}" disabled>
             {{ $main_category->main_category }}
           </option>
-        @endforeach
-        @foreach($sub_categories as $sub_category)
-          <!-- サブカテゴリー表示 -->
-          <option value="{{ $sub_category->id }}" >
-            {{ $sub_category->sub_category }}
-          </option>
+          @foreach($main_category->subCategories as $sub_category)
+            <option value="{{ $sub_category->id }}" >
+              {{ $sub_category->sub_category }}
+            </option>
+          @endforeach
         @endforeach
       </select>
     </div>

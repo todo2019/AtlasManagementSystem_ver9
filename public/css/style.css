@@ -19,7 +19,6 @@ li {
 /* サイドバー */
 .sidebar {
   width: 150px;
-  height: 100vh;
   background-color: #03AAD2;
   font-weight: bold;
 }
@@ -115,9 +114,9 @@ li {
 }
 
 /* 掲示板 */
-.sub_categories {
-  display: none;
-}
+/* .sub_categories { */
+  /* display: none; */
+/* } */
 
 .post_create_area {
   background: #FFF;
