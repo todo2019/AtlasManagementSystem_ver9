@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use Gate;
 use App\Models\Users\User;
-use App\Models\Users\Subjects;
+use App\Models\Users\Subject;
 use App\Searchs\DisplayUsers;
 use App\Searchs\SearchResultFactories;
 
@@ -20,7 +20,7 @@ class UsersController extends Controller
         $updown = $request->updown;
         $gender = $request->sex;
         $role = $request->role;
-        $subjects = null;// ここで検索時の科目を受け取る
+        $subjects = $request->subjects;// ここで検索時の科目を受け取る
         $userFactory = new SearchResultFactories();
         $users = $userFactory->initializeUsers($keyword, $category, $updown, $gender, $role, $subjects);
         $subjects = Subject::all();
