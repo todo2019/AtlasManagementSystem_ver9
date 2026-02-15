@@ -48,6 +48,26 @@ class CalendarWeekDay{
        $three_part_frame = '0';
      }
 
+     $today = \Carbon\Carbon::today();
+     $targetDate = \Carbon\Carbon::parse($ymd);
+     $userId = auth()->id();
+
+
+     if($targetDate <$today){
+      $reservation = ReserveSettings::whereDate('setting_reserve',$targetDate)
+        ->whereHas('users',function($query)use($userId){
+          $query->where('user_id','userId');
+        })
+      ->first();
+
+    if($reservation){
+      return '<span class = "reserved-label">リモ'.$reservation->part.'部 予約済</span>';
+    }
+    else {
+      return '<span class = "closed-label">受付終了</span>';
+    }
+     }
+
      $html = [];
      $html[] = '<select name="getPart[]" class="border-primary" style="width:70px; border-radius:5px;" form="reserveParts">';
      $html[] = '<option value="" selected></option>';

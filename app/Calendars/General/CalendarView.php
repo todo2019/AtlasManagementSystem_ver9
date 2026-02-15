@@ -39,12 +39,14 @@ class CalendarView{
       foreach($days as $day){
         $startDay = $this->carbon->copy()->format("Y-m-01");
         $toDay = $this->carbon->copy()->format("Y-m-d");
+        $classes = 'calendar-td';
 
-        if($startDay <= $day->everyDay() && $toDay >= $day->everyDay()){
-          $html[] = '<td class="calendar-td">';
+        if($startDay <= $day->everyDay() && $toDay > $day->everyDay()){
+          $classes .= 'past-day';
         }else{
-          $html[] = '<td class="calendar-td '.$day->getClassName().'">';
+          $classes .=' ' . $day->getClassName();
         }
+        $html[] = '<td class="'.$classes.'">';
         $html[] = $day->render();
 
         if(in_array($day->everyDay(), $day->authReserveDay())){
